@@ -11,7 +11,7 @@ public:
     const Point center;
     const Vector direction;
     const Vector up;
-    const double alpha;
-    const double beta;
+    const double alpha; // Angle in degree
+    const double beta; // Angle in degree
     const double z_min;
 };
