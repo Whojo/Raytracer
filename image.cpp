@@ -12,9 +12,9 @@ void Image::save_to_ppm(const std::string &filename) const
 
     for (size_t i = 0; i < height; i++) {
         for (size_t j = 0; j < width; j++) {
-            f << " " << buffer[i][j].RED
-              << " " << buffer[i][j].GREEN
-              << " " << buffer[i][j].BLUE
+            f << " " << (short) buffer[i][j].RED
+              << " " << (short) buffer[i][j].GREEN
+              << " " << (short) buffer[i][j].BLUE
               << " " << std::endl;
         }
     }
