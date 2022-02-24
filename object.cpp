@@ -6,14 +6,14 @@ Sphere::Sphere(const Point &center, const double radius)
 {}
 
 
-bool Sphere::is_intersecting(const Line &l) const
+bool Sphere::is_intersecting(const Ray &r) const
 {
-    auto dist = l.origine - center;
-    return l.coeff * l.coeff * (l.dir * l.dir)
-        + 2 * l.coeff * (l.dir * dist)
-        + dist * dist
-        - radius * radius
-        == 0;
+    auto dist = r.origine - center;
+    auto scalar_dist = r.dir * dist;
+    return scalar_dist * scalar_dist
+        - dist * dist
+        + radius * radius
+        >= 0;
 }
 
 Vector Sphere::get_normal(const Point &p) const

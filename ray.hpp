@@ -4,10 +4,9 @@
 #include "vector.hpp"
 
 
-class Line
+class Ray
 {
 public:
-    const double coeff;
     const Vector dir;
     const Point origine;
 };
