@@ -8,9 +8,9 @@
 class Object
 {
 public:
-    virtual bool is_intersecting(const Line &l) = 0;
-    virtual Vector get_normal(const Point &p) = 0;
-    virtual Texture get_texture(const Point &p) = 0;
+    virtual bool is_intersecting(const Line &l) const = 0;
+    virtual Vector get_normal(const Point &p) const = 0;
+    virtual Texture get_texture(const Point &p) const = 0;
 
 public:
     TextureMaterial *texture;
@@ -23,6 +23,9 @@ public:
     bool is_intersecting(const Line &l) override;
     Vector get_normal(const Point &p) override;
     Texture get_texture(const Point &p) override;
+    bool is_intersecting(const Line &l) const override;
+    Vector get_normal(const Point &p) const override;
+    Texture get_texture(const Point &p) const override;
 
 public:
     const Point center;
