@@ -1,7 +1,6 @@
 #include "object.hpp"
 
 
-bool Sphere::is_intersecting(const Line &l)
 bool Sphere::is_intersecting(const Line &l) const
 {
     auto dist = l.origine - center;
