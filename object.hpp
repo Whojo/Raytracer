@@ -20,9 +20,6 @@ public:
 class Sphere : Object
 {
 public:
-    bool is_intersecting(const Line &l) override;
-    Vector get_normal(const Point &p) override;
-    Texture get_texture(const Point &p) override;
     bool is_intersecting(const Line &l) const override;
     Vector get_normal(const Point &p) const override;
     Texture get_texture(const Point &p) const override;
