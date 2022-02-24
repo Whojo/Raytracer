@@ -1,6 +1,11 @@
 #include "object.hpp"
 
 
+Sphere::Sphere(const Point &center, const double radius)
+    : center{center}, radius{radius}
+{}
+
+
 bool Sphere::is_intersecting(const Line &l) const
 {
     auto dist = l.origine - center;

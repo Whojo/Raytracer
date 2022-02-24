@@ -18,7 +18,7 @@ public:
      virtual Texture get_texture(const Point &p) const = 0;
  };
 
-class UniformTexture : TextureMaterial
+class UniformTexture : public TextureMaterial
 {
      Texture get_texture(const Point &p) const override;
 };

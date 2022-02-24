@@ -17,9 +17,11 @@ public:
 };
 
 
-class Sphere : Object
+class Sphere : public Object
 {
 public:
+    Sphere(const Point &center, const double radius);
+
     bool is_intersecting(const Line &l) const override;
     Vector get_normal(const Point &p) const override;
     Texture get_texture(const Point &p) const override;
