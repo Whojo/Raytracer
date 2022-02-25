@@ -49,7 +49,7 @@ static Color cast_ray(const Scene &scene, const Ray &ray)
     for (const auto &obj : scene.objects) {
         auto possible_sol = obj.get_intersection(ray);
         if (possible_sol.has_value())
-            return Color{255, 0, 0}; // TODO: compute real color
+            return obj.get_texture(*possible_sol).color;
     }
 
     return Color{0, 0, 0};

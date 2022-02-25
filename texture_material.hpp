@@ -20,5 +20,10 @@ public:
 
 class UniformTexture : public TextureMaterial
 {
-     Texture get_texture(const Point &p) const override;
+public:
+    UniformTexture(const Texture &texture_);
+    Texture get_texture(const Point &p) const override;
+
+public:
+    const Texture texture;
 };

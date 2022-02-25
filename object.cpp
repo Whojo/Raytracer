@@ -2,9 +2,11 @@
 #include <cmath>
 
 
-Sphere::Sphere(const Point &center, const double radius)
+Sphere::Sphere(const Point &center, const double radius, const TextureMaterial &texture_)
     : center{center}, radius{radius}
-{}
+{
+    texture = &texture_;
+}
 
 
 std::optional<Point> Sphere::get_intersection(const Ray &r) const
