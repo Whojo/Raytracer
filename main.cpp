@@ -6,9 +6,10 @@
 
 int main(int argc, char *argv[])
 {
-    UniformTexture test{Texture{Color{0, 255, 0}, 1, 1, 1}};
+    UniformTexture  green_text{Texture{Color{119, 223, 143}, 1, 1, 1}};
+    UniformTexture orange_text{Texture{Color{236, 112,   0}, 1, 1, 1}};
     Scene scene{
-        { Sphere{Point{10, 1, 0}, 2, test} },
+        { Sphere{Point{10, 1, 0}, 2, green_text}, Sphere{Point{13, -2, 2}, 4, orange_text}},
         { PointLight{Point{0, 0, 0}, Vector{1, 0, 0}} },
         Camera{Point{0, 0, 0}, Vector{1, 0, 0}, Vector{0, 0, 1}, 90, 69, 1}
     };

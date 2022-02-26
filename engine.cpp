@@ -46,13 +46,20 @@ static Point get_coords_on_image_plan(const struct ImgPlan &img_plan, size_t x, 
 
 static Color cast_ray(const Scene &scene, const Ray &ray)
 {
+    Color ray_color{0, 0, 0};
+    unsigned int dist = -1;
+
     for (const auto &obj : scene.objects) {
-        auto possible_sol = obj.get_intersection(ray);
-        if (possible_sol.has_value())
-            return obj.get_texture(*possible_sol).color;
+        auto possible_intersection = obj.get_intersection(ray);
+        if (possible_intersection.has_value()
+            and dist > (*possible_intersection - ray.origine).amplitude())
+        {
+            ray_color = obj.get_texture(*possible_intersection).color;
+            dist = (*possible_intersection - ray.origine).amplitude();
+        }
     }
 
-    return Color{0, 0, 0};
+    return ray_color;
 }
 
 Image engine::generate_image(int width, int height, const Scene &scene)
