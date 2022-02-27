@@ -60,7 +60,7 @@ Vector Vector::as_unit() const
     return Vector{x / amplitude, y / amplitude, z / amplitude};
 }
 
-std::ostream& operator<<(std::ostream &out , Vector &vect)
+std::ostream& operator<<(std::ostream &out, const Vector &vect)
 {
     return out << "Vect(" << vect.x << ", "
                           << vect.y << ", "

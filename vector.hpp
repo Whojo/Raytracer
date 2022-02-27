@@ -23,4 +23,4 @@ public:
 
 bool are_colinear(const Vector &lhs, const Vector &rhs);
 Vector cross_product(const Vector &lhs, const Vector &rhs);
-std::ostream& operator<<(std::ostream &out , Vector &vect);
+std::ostream& operator<<(std::ostream &out, const Vector &vect);
