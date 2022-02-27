@@ -67,33 +67,64 @@ static double cast_ray_dist(const Scene &scene, const Ray &ray)
     return dist;
 }
 
-static double get_light_influence(const Scene &scene, const Object &obj,
-                                  const Point &point)
+static double get_diffusion_light_intensity(const Light &light, const Object &obj,
+                                            const Point &point)
 {
     auto kd = obj.get_texture(point).diffusion_lightness;
-    double total_lights_intensity = 0;
+    auto L = (light.origin - point).as_unit();
+    auto cos = obj.get_normal(point) * L;
+    cos = cos < 0 ? 0 : cos;
+    auto I = light.intensity;
 
+    return kd * I * cos;
+}
+
+static Vector get_reflected_vector(const Vector &d, const Vector &n)
+{
+    return d - n * (d * n) * 2;
+}
+
+static double get_specular_light_intensity(const Light &light, const Object &obj,
+                                           const Point &point, const Ray &ray)
+{
+    auto ks = obj.get_texture(point).specular_lightness;
+    auto ns = obj.get_texture(point).specular_pickyness;
+
+    auto L = (light.origin - point).as_unit();
+    auto S = get_reflected_vector(ray.dir, obj.get_normal(point));
+    auto cos = S * L;
+    cos = cos < 0 ? 0 : cos;
+    auto I = light.intensity;
+
+    return ks * I * pow(cos, ns);
+}
+
+static double get_light_influence(const Scene &scene, const Object &obj,
+                                  const Point &point, const Ray &ray)
+{
+    double total_lights_intensity = 0;
     for (const auto light : scene.lights)
     {
         auto L = (light.origin - point).as_unit();
         if (cast_ray_dist(scene, Ray{-L, light.origin}) + epsilon < (point - light.origin).amplitude())
             continue;
 
-        auto cos = obj.get_normal(point) * L;
-        cos = cos < 0 ? 0 : cos;
-        auto I = light.intensity;
+        auto I_diff = get_diffusion_light_intensity(light, obj, point);
+        auto I_spec = get_specular_light_intensity(light, obj, point, ray);
 
-        total_lights_intensity = add_lights_intensity(total_lights_intensity, I * cos);
+        auto total_light_intensity = add_lights_intensity(I_diff, I_spec);
+        total_lights_intensity = add_lights_intensity(total_lights_intensity,
+                                                      total_light_intensity);
     }
 
-    return kd * total_lights_intensity;
+    return total_lights_intensity;
 }
 
 static Color get_color_on_point(const Object &obj, const Scene &scene,
-                                const Point &point)
+                                const Point &point, const Ray &ray)
 {
     auto color = obj.get_texture(point).color;
-    auto light_influence = get_light_influence(scene, obj, point);
+    auto light_influence = get_light_influence(scene, obj, point, ray);
 
     return color * light_influence;
 }
@@ -108,7 +139,7 @@ static Color cast_ray(const Scene &scene, const Ray &ray)
         if (possible_intersection.has_value()
             and dist > (*possible_intersection - ray.origine).amplitude())
         {
-            ray_color = get_color_on_point(obj, scene, *possible_intersection);
+            ray_color = get_color_on_point(obj, scene, *possible_intersection, ray);
             dist = (*possible_intersection - ray.origine).amplitude();
         }
     }
