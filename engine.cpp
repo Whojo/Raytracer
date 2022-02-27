@@ -15,6 +15,7 @@ struct ImgPlan
 
 
 const double pi = std::acos(-1);
+const double epsilon = 0.0001;
 
 static struct ImgPlan get_img_plan(const Camera &camera, int width, int height)
 {
@@ -52,15 +53,32 @@ static double add_lights_intensity(const double i1, const double i2)
     return max + min * (1 - max) / 2;
 }
 
-static double get_light_influence(const std::vector<Light> lights, const Object &obj,
+static double cast_ray_dist(const Scene &scene, const Ray &ray)
+{
+    double dist = -1u;
+
+    for (const auto &obj : scene.objects) {
+        auto possible_intersection = obj.get_intersection(ray);
+        if (possible_intersection.has_value()
+            and dist > (*possible_intersection - ray.origine).amplitude())
+            dist = (*possible_intersection - ray.origine).amplitude();
+    }
+
+    return dist;
+}
+
+static double get_light_influence(const Scene &scene, const Object &obj,
                                   const Point &point)
 {
-    double total_lights_intensity = 0;
     auto kd = obj.get_texture(point).diffusion_lightness;
+    double total_lights_intensity = 0;
 
-    for (const auto light : lights)
+    for (const auto light : scene.lights)
     {
         auto L = (light.origin - point).as_unit();
+        if (cast_ray_dist(scene, Ray{-L, light.origin}) + epsilon < (point - light.origin).amplitude())
+            continue;
+
         auto cos = obj.get_normal(point) * L;
         cos = cos < 0 ? 0 : cos;
         auto I = light.intensity;
@@ -71,11 +89,11 @@ static double get_light_influence(const std::vector<Light> lights, const Object 
     return kd * total_lights_intensity;
 }
 
-static Color get_color_on_point(const Object &obj, const std::vector<Light> &lights,
+static Color get_color_on_point(const Object &obj, const Scene &scene,
                                 const Point &point)
 {
     auto color = obj.get_texture(point).color;
-    auto light_influence = get_light_influence(lights, obj, point);
+    auto light_influence = get_light_influence(scene, obj, point);
 
     return color * light_influence;
 }
@@ -90,7 +108,7 @@ static Color cast_ray(const Scene &scene, const Ray &ray)
         if (possible_intersection.has_value()
             and dist > (*possible_intersection - ray.origine).amplitude())
         {
-            ray_color = get_color_on_point(obj, scene.lights, *possible_intersection);
+            ray_color = get_color_on_point(obj, scene, *possible_intersection);
             dist = (*possible_intersection - ray.origine).amplitude();
         }
     }
