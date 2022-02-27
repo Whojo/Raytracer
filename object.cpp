@@ -36,7 +36,7 @@ std::optional<Point> Sphere::get_intersection(const Ray &r) const
 
 Vector Sphere::get_normal(const Point &p) const
 {
-    return p - center;
+    return (p - center).as_unit();
 }
 
 Texture Sphere::get_texture(const Point &p) const
