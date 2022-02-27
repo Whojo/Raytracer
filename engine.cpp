@@ -44,6 +44,27 @@ static Point get_coords_on_image_plan(const struct ImgPlan &img_plan, size_t x, 
     return img_plan.top_left_corner + img_plan.delta_x * x + img_plan.delta_y * y;
 }
 
+static double get_light_influence(const std::vector<Light> lights, const Object &obj,
+                                  const Point &point)
+{
+    auto kd = obj.get_texture(point).diffusion_lightness;
+    auto L = (lights[0].origin - point).as_unit();
+    auto cos = obj.get_normal(point) * L;
+    cos = cos < 0 ? 0 : cos;
+    auto I = lights[0].intensity;
+
+    return kd * cos * I;
+}
+
+static Color get_color_on_point(const Object &obj, const std::vector<Light> &lights,
+                                const Point &point)
+{
+    auto color = obj.get_texture(point).color;
+    auto light_influence = get_light_influence(lights, obj, point);
+
+    return color * light_influence;
+}
+
 static Color cast_ray(const Scene &scene, const Ray &ray)
 {
     Color ray_color{0, 0, 0};
@@ -54,7 +75,7 @@ static Color cast_ray(const Scene &scene, const Ray &ray)
         if (possible_intersection.has_value()
             and dist > (*possible_intersection - ray.origine).amplitude())
         {
-            ray_color = obj.get_texture(*possible_intersection).color;
+            ray_color = get_color_on_point(obj, scene.lights, *possible_intersection);
             dist = (*possible_intersection - ray.origine).amplitude();
         }
     }
