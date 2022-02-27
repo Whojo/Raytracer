@@ -5,14 +5,14 @@
 
 
 class Light
-{};
+{
+public:
+    const Point origin;
+    const double intensity;
+};
 
 class PointLight : public Light
 {
 public:
-    PointLight(const Point &origine, const Vector &dir);
-
-public:
-    const Point origine;
-    const Vector dir;
+    PointLight(const Point &origin, const double intensity_);
 };
