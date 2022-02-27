@@ -15,5 +15,5 @@ std::ostream& operator<<(std::ostream &out, const Point &point)
 {
     return out << "point(" << point.x << ", "
                            << point.y << ", "
-                           << point.z << ")" << std::endl;
+                           << point.z << ")";
 }
