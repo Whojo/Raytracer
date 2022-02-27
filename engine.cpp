@@ -47,7 +47,7 @@ static Point get_coords_on_image_plan(const struct ImgPlan &img_plan, size_t x, 
 static Color cast_ray(const Scene &scene, const Ray &ray)
 {
     Color ray_color{0, 0, 0};
-    unsigned int dist = -1;
+    double dist = -1u;
 
     for (const auto &obj : scene.objects) {
         auto possible_intersection = obj.get_intersection(ray);
