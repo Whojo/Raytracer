@@ -44,16 +44,31 @@ static Point get_coords_on_image_plan(const struct ImgPlan &img_plan, size_t x, 
     return img_plan.top_left_corner + img_plan.delta_x * x + img_plan.delta_y * y;
 }
 
+static double add_lights_intensity(const double i1, const double i2)
+{
+    auto max = i1 > i2 ? i1 : i2;
+    auto min = i1 > i2 ? i2 : i1;
+
+    return max + min * (1 - max) / 2;
+}
+
 static double get_light_influence(const std::vector<Light> lights, const Object &obj,
                                   const Point &point)
 {
+    double total_lights_intensity = 0;
     auto kd = obj.get_texture(point).diffusion_lightness;
-    auto L = (lights[0].origin - point).as_unit();
-    auto cos = obj.get_normal(point) * L;
-    cos = cos < 0 ? 0 : cos;
-    auto I = lights[0].intensity;
 
-    return kd * cos * I;
+    for (const auto light : lights)
+    {
+        auto L = (light.origin - point).as_unit();
+        auto cos = obj.get_normal(point) * L;
+        cos = cos < 0 ? 0 : cos;
+        auto I = light.intensity;
+
+        total_lights_intensity = add_lights_intensity(total_lights_intensity, I * cos);
+    }
+
+    return kd * total_lights_intensity;
 }
 
 static Color get_color_on_point(const Object &obj, const std::vector<Light> &lights,
