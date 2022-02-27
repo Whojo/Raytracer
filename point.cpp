@@ -8,7 +8,7 @@ Point Point::operator+(const Vector &v) const
 
 Vector Point::operator-(const Point &p) const
 {
-    return Vector{p.x - x, p.y - y, p.z - z};
+    return Vector{x - p.x, y - p.y, z - p.z};
 }
 
 std::ostream& operator<<(std::ostream &out, const Point &point)
