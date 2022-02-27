@@ -9,7 +9,7 @@ struct Texture
     const Color color;
     const double specular_pickyness;
     const double specular_lightness;
-    const double specular_coefficient;
+    const double diffusion_lightness;
 };
 
  class TextureMaterial
