@@ -8,10 +8,10 @@
 
 int main(int argc, char *argv[])
 {
-    UniformTexture   blue_text{Texture{Color{146, 194, 182}, 7,   2, 0.6}};
-    UniformTexture  white_text{Texture{Color{232, 236, 196}, 0,   0,   1}};
-    UniformTexture orange_text{Texture{Color{236, 147, 106}, 5,   2, 0.6}};
-    UniformTexture yellow_text{Texture{Color{213, 166,  50}, 7, 1.5, 0.6}};
+    UniformTexture   blue_text{Texture{Color{146, 194, 182}, 7,   0.5, 0.6}};
+    UniformTexture  white_text{Texture{Color{232, 236, 196}, 0,   0.6,   1}};
+    UniformTexture orange_text{Texture{Color{236, 147, 106}, 5,   0.4, 0.6}};
+    UniformTexture yellow_text{Texture{Color{213, 166,  50}, 7,   0,   1}};
 
     Scene scene{
         { Sphere{Point{ 0,  0, -10000}, 10000,  white_text},
