@@ -1,6 +1,7 @@
 #include "engine.hpp"
 
 #include <iostream>
+#include <cstdlib>
 
 #include <cmath>
 #include <exception>
@@ -15,6 +16,7 @@ struct ImgPlan
 
 
 const double pi = std::acos(-1);
+const short ray_per_pxl = 10;
 
 static struct ImgPlan get_img_plan(const Camera &camera, int width, int height)
 {
@@ -42,6 +44,20 @@ static struct ImgPlan get_img_plan(const Camera &camera, int width, int height)
 static Point get_coords_on_image_plan(const struct ImgPlan &img_plan, size_t x, size_t y)
 {
     return img_plan.top_left_corner + img_plan.delta_x * x + img_plan.delta_y * y;
+}
+
+static double get_random_proportion()
+{
+    return (double) std::rand() / (RAND_MAX);
+}
+
+static Point get_random_coords_on_image_plan(const struct ImgPlan &img_plan, size_t x, size_t y)
+{
+    auto top_left_of_pxl = get_coords_on_image_plan(img_plan, x, y);
+    auto rand_x = get_random_proportion();
+    auto rand_y = get_random_proportion();
+
+    return top_left_of_pxl + img_plan.delta_x * rand_x + img_plan.delta_y * rand_x;
 }
 
 static double add_lights_intensity(const double i1, const double i2)
@@ -148,7 +164,7 @@ static Color cast_ray(const Scene &scene, const Ray &ray, const short nb_reflect
             auto reflected_ray = Ray{reflected_vector, *possible_intersection};
             auto reflected_color = cast_ray(scene, reflected_ray, nb_reflect - 1);
 
-            ray_color = point_color + reflected_color;
+            ray_color = point_color * reflected_color;
             dist = (*possible_intersection - ray.origine).amplitude();
         }
     }
@@ -163,11 +179,16 @@ Image engine::generate_image(int width, int height, const Scene &scene)
     std::vector<std::vector<Color>> buffer;
     for (size_t y = 0; y < height; y++) {
         std::vector<Color> row;
-        for (size_t x = 0; x < width ; x++) {
-            auto dst = get_coords_on_image_plan(img_plan, x, y);
-            auto ray = Ray{dst - scene.camera.center, dst};
+        for (size_t x = 0; x < width; x++) {
+            Color sum_color{0, 0, 0};
+            for (size_t i = 0; i < ray_per_pxl; i++) {
+                auto dst = get_random_coords_on_image_plan(img_plan, x, y);
+                auto ray = Ray{dst - scene.camera.center, dst};
 
-            row.push_back(cast_ray(scene, ray, 5));
+                sum_color = sum_color + cast_ray(scene, ray, 5);
+            }
+
+            row.push_back(sum_color / ray_per_pxl);
         }
         buffer.push_back(row);
     }
