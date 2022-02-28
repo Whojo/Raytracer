@@ -7,6 +7,7 @@ class Color
 {
 public:
     Color operator*(const double alpha) const;
+    Color operator+(const Color &c) const;
 
 public:
     uint16_t RED;

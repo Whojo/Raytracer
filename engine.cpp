@@ -15,7 +15,6 @@ struct ImgPlan
 
 
 const double pi = std::acos(-1);
-const double epsilon = 0.0001;
 
 static struct ImgPlan get_img_plan(const Camera &camera, int width, int height)
 {
@@ -129,9 +128,12 @@ static Color get_color_on_point(const Object &obj, const Scene &scene,
     return color * light_influence;
 }
 
-static Color cast_ray(const Scene &scene, const Ray &ray)
+static Color cast_ray(const Scene &scene, const Ray &ray, const short nb_reflect)
 {
     Color ray_color{0, 0, 0};
+    if (nb_reflect == 0)
+        return ray_color;
+
     double dist = -1u;
 
     for (const auto &obj : scene.objects) {
@@ -139,7 +141,14 @@ static Color cast_ray(const Scene &scene, const Ray &ray)
         if (possible_intersection.has_value()
             and dist > (*possible_intersection - ray.origine).amplitude())
         {
-            ray_color = get_color_on_point(obj, scene, *possible_intersection, ray);
+            auto point_color = get_color_on_point(obj, scene,
+                                                  *possible_intersection, ray);
+
+            auto reflected_vector = get_reflected_vector(ray.dir, obj.get_normal(*possible_intersection));
+            auto reflected_ray = Ray{reflected_vector, *possible_intersection};
+            auto reflected_color = cast_ray(scene, reflected_ray, nb_reflect - 1);
+
+            ray_color = point_color + reflected_color;
             dist = (*possible_intersection - ray.origine).amplitude();
         }
     }
@@ -158,7 +167,7 @@ Image engine::generate_image(int width, int height, const Scene &scene)
             auto dst = get_coords_on_image_plan(img_plan, x, y);
             auto ray = Ray{dst - scene.camera.center, dst};
 
-            row.push_back(cast_ray(scene, ray));
+            row.push_back(cast_ray(scene, ray, 5));
         }
         buffer.push_back(row);
     }

@@ -25,10 +25,10 @@ std::optional<Point> Sphere::get_intersection(const Ray &r) const
     auto d1 = -scalar_dist + sqrt_delta;
     auto d2 = -scalar_dist - sqrt_delta;
 
-    if (d1 < 0 and d2 < 0)
+    if (d1 < epsilon and d2 < epsilon)
         return std::nullopt;
 
-    if ((d1 >= 0 and d1 < d2) or d2 < 0)
+    if ((d1 >= epsilon and d1 < d2 + epsilon) or d2 < epsilon)
         return std::optional(r.origine + r.dir * d1);
 
     return std::optional(r.origine + r.dir * d2);

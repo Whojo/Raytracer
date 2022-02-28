@@ -6,6 +6,8 @@
 #include "vector.hpp"
 #include "texture_material.hpp"
 
+const double epsilon = 0.0001;
+
 
 class Object
 {
