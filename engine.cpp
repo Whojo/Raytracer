@@ -75,7 +75,7 @@ static double cast_ray_dist(const Scene &scene, const Ray &ray)
     double dist = -1u;
 
     for (const auto &obj : scene.objects) {
-        auto possible_intersection = obj.get_intersection(ray);
+        auto possible_intersection = obj->get_intersection(ray);
         if (possible_intersection.has_value()
             and dist > (*possible_intersection - ray.origine).amplitude())
             dist = (*possible_intersection - ray.origine).amplitude();
@@ -155,15 +155,16 @@ static Color cast_ray(const Scene &scene, const Ray &ray, const short nb_reflect
     double dist = -1u;
 
     for (const auto &obj : scene.objects) {
-        auto possible_intersection = obj.get_intersection(ray);
+        auto possible_intersection = obj->get_intersection(ray);
         if (possible_intersection.has_value()
             and dist > (*possible_intersection - ray.origine).amplitude())
         {
-            auto point_color = get_color_on_point(obj, scene,
+            auto point_color = get_color_on_point(*obj, scene,
                                                   *possible_intersection, ray);
 
-            auto ks = obj.get_texture(*possible_intersection).specular_lightness;
-            auto reflected_vector = get_reflected_vector(ray.dir, obj.get_normal(*possible_intersection));
+            auto ks = obj->get_texture(*possible_intersection).specular_lightness;
+            auto reflected_vector = get_reflected_vector(ray.dir,
+                                                         obj->get_normal(*possible_intersection));
             auto reflected_ray = Ray{reflected_vector, *possible_intersection};
             auto reflected_color = cast_ray(scene, reflected_ray, nb_reflect - 1);
 

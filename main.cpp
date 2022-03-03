@@ -3,6 +3,7 @@
 #include "color.hpp"
 #include "engine.hpp"
 #include "image.hpp"
+#include "sphere.hpp"
 #include "scene.hpp"
 #include "texture_material.hpp"
 
@@ -14,10 +15,12 @@ int main(int argc, char *argv[])
     UniformTexture yellow_text{Texture{Color{213, 166,  50}, 7,   0,   1}};
 
     Scene scene{
-        { Sphere{Point{ 0,  0, -10000}, 10000,  white_text},
-          Sphere{Point{10,  2,    1.5},     2,   blue_text},
-          Sphere{Point{13, -2,      2},     4, orange_text},
-          Sphere{Point{20,  6,      3},     8, yellow_text}},
+        std::vector<std::shared_ptr<Object>>{
+            std::make_shared<Sphere>(Point{ 0,  0, -10000}, 10000,  white_text),
+            std::make_shared<Sphere>(Point{10,  2,    1.5},     2,   blue_text),
+            std::make_shared<Sphere>(Point{13, -2,      2},     4, orange_text),
+            std::make_shared<Sphere>(Point{20,  6,      3},     8, yellow_text)
+        },
         { PointLight{Point{6,   -2, 5}, 0.15},
           PointLight{Point{6, -1.9, 5}, 0.15},
           PointLight{Point{6, -1.8, 5}, 0.15},

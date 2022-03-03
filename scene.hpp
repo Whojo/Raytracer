@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "object.hpp"
 #include "light.hpp"
@@ -10,7 +11,7 @@
 class Scene
 {
 public:
-    std::vector<Sphere> objects; // XXX: Replace sphere by an object and fixed bug
+    std::vector<std::shared_ptr<Object>> objects;
     std::vector<Light> lights;
     const Camera camera;
 };
