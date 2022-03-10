@@ -17,8 +17,8 @@ struct ImgPlan
 
 const double pi = std::acos(-1);
 
-const short ray_per_pxl = 10;
-const short nb_reflections = 10;
+const short ray_per_pxl = 1;
+const short nb_reflections = 5;
 
 static struct ImgPlan get_img_plan(const Camera &camera, int width, int height)
 {
