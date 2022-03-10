@@ -90,7 +90,7 @@ static double get_diffusion_light_intensity(const Light &light, const Object &ob
     auto kd = obj.get_texture(point).diffusion_lightness;
     auto L = (light.origin - point).as_unit();
     auto cos = obj.get_normal(point) * L;
-    cos = cos < 0 ? 0 : cos;
+    cos = cos < 0 ? -cos : cos;
     auto I = light.intensity;
 
     return kd * I * cos;

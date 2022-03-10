@@ -1,3 +1,5 @@
+#pragma once
+
 #include "object.hpp"
 
 class Sphere : public Object
