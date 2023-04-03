@@ -1,8 +1,0 @@
-
-# Improvements:
-- Ambient Light
-- HSL color
-- Colored light
-
-# Bugs
-- The UP vector should be perpendicular to P.
